@@ -109,7 +109,13 @@ npm run dev
 ```env
 NEXT_PUBLIC_SUPABASE_URL=       # Your Supabase project URL
 NEXT_PUBLIC_SUPABASE_ANON_KEY=  # Your Supabase anon/public key
+
+DEMO_USER_EMAIL=                # Optional: account behind "Browse as demo user"
+DEMO_USER_PASSWORD=             # Optional: read server-side only
 ```
+
+Without the two `DEMO_USER_*` values the guest button stays visible but
+reports that demo access is not configured on this deployment.
 
 ## Testing
 
