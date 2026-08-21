@@ -56,12 +56,3 @@ export const stageSchema = z.object({
 });
 
 export type StageFormValues = z.infer<typeof stageSchema>;
-
-// ---- Tags ----
-
-export const tagSchema = z.object({
-  name: z.string().min(1, 'Name is required'),
-  color: z.string().optional(),
-});
-
-export type TagFormValues = z.infer<typeof tagSchema>;

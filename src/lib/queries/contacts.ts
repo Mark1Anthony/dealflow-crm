@@ -1,18 +1,10 @@
 import { getSupabaseServerClient } from '@/lib/supabase-server';
-import type { Contact, Deal, Note, Activity, Tag } from '@/lib/types';
+import type { Contact, Deal, Note, Activity } from '@/lib/types';
 
-export async function getContacts(search?: string, tagId?: string, page = 1, limit = 20) {
+export async function getContacts(search?: string, page = 1, limit = 20) {
   const supabase = await getSupabaseServerClient();
 
   let query = supabase.from('contacts').select('*', { count: 'exact' }).order('name');
-
-  if (tagId) {
-    query = supabase
-      .from('contacts')
-      .select('*, contact_tags!inner(tag_id)', { count: 'exact' })
-      .eq('contact_tags.tag_id', tagId)
-      .order('name');
-  }
 
   if (search) {
     query = query.or(
@@ -42,7 +34,7 @@ export async function getContactById(id: string) {
 export async function getContactWithDetails(id: string) {
   const supabase = await getSupabaseServerClient();
 
-  const [contactRes, dealsRes, notesRes, activitiesRes, tagsRes] =
+  const [contactRes, dealsRes, notesRes, activitiesRes] =
     await Promise.all([
       supabase.from('contacts').select('*').eq('id', id).single(),
       supabase
@@ -59,10 +51,6 @@ export async function getContactWithDetails(id: string) {
         .select('*')
         .eq('contact_id', id)
         .order('created_at', { ascending: false }),
-      supabase
-        .from('contact_tags')
-        .select('tag_id, tags:tags(*)')
-        .eq('contact_id', id),
     ]);
 
   if (contactRes.error) throw contactRes.error;
@@ -72,6 +60,5 @@ export async function getContactWithDetails(id: string) {
     deals: (dealsRes.data ?? []) as Deal[],
     notes: (notesRes.data ?? []) as Note[],
     activities: (activitiesRes.data ?? []) as Activity[],
-    tags: (tagsRes.data?.map((ct: any) => ct.tags) ?? []) as Tag[],
   };
 }

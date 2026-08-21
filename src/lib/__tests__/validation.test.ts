@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { contactSchema, dealSchema, noteSchema, activitySchema, stageSchema, tagSchema } from '../validation';
+import { contactSchema, dealSchema, noteSchema, activitySchema, stageSchema } from '../validation';
 
 describe('contactSchema', () => {
   it('accepts valid contact with all fields', () => {
@@ -188,19 +188,3 @@ describe('stageSchema', () => {
   });
 });
 
-describe('tagSchema', () => {
-  it('accepts valid tag', () => {
-    const result = tagSchema.safeParse({ name: 'VIP', color: '#ff0000' });
-    expect(result.success).toBe(true);
-  });
-
-  it('accepts tag without color', () => {
-    const result = tagSchema.safeParse({ name: 'VIP' });
-    expect(result.success).toBe(true);
-  });
-
-  it('rejects tag without name', () => {
-    const result = tagSchema.safeParse({});
-    expect(result.success).toBe(false);
-  });
-});

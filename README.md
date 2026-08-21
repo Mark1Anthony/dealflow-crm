@@ -28,7 +28,7 @@ A lightweight, full-stack CRM for managing sales pipelines, contacts, and activi
 | Framework | **Next.js 16** (App Router) | Server Components + Server Actions for zero-API-boilerplate CRUD |
 | Language | **TypeScript** (strict) | Type safety across the full stack, Zod for runtime validation |
 | Auth | **Supabase Auth** | Email/password with middleware guard, session via cookies |
-| Database | **PostgreSQL** (Supabase) | 7 tables, foreign keys, CHECK constraints, indexes |
+| Database | **PostgreSQL** (Supabase) | 5 tables, foreign keys, CHECK constraints, indexes |
 | Security | **Row Level Security** | Every table has RLS policies. Users can only see their own data |
 | Drag & Drop | **@hello-pangea/dnd** | Maintained fork of react-beautiful-dnd, optimistic updates with rollback |
 | Styling | **Tailwind CSS** | Utility-first, dark theme, responsive |
@@ -69,7 +69,7 @@ src/
 
 ### Database Schema
 
-7 tables with Row Level Security on every table:
+5 tables with Row Level Security on every table:
 
 ```
 pipeline_stages  ←──  deals  ──→  contacts
@@ -77,8 +77,6 @@ pipeline_stages  ←──  deals  ──→  contacts
                       notes          notes
                         │              │
                     activities     activities
-                                      │
-                                 contact_tags  ──→  tags
 ```
 
 All tables include `user_id` FK to `auth.users` with `ON DELETE CASCADE`. RLS policies ensure `user_id = auth.uid()` on every operation.

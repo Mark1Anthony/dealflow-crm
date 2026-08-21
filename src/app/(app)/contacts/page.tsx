@@ -5,7 +5,7 @@ import { TopBar } from "@/components/TopBar";
 export default async function ContactsPage({ searchParams }: { searchParams: Promise<{ q?: string; page?: string }> }) {
   const { q, page: pageParam } = await searchParams;
   const page = Math.max(1, Number(pageParam) || 1);
-  const { contacts, total, limit } = await getContacts(q, undefined, page);
+  const { contacts, total, limit } = await getContacts(q, page);
 
   return (
     <>

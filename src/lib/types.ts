@@ -70,20 +70,6 @@ export interface Activity {
   deal?: Deal;
 }
 
-export interface Tag {
-  id: string;
-  user_id: string;
-  name: string;
-  color: string | null;
-  created_at: string;
-}
-
-export interface ContactTag {
-  id: string;
-  contact_id: string;
-  tag_id: string;
-}
-
 export interface DashboardStats {
   totalContacts: number;
   activeDeals: number;
