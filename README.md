@@ -15,11 +15,22 @@ A lightweight, full-stack CRM for managing sales pipelines, contacts, and activi
 
 - **Contacts** — Create, edit, search, and manage contacts with company, email, phone, and notes
 - **Deal Pipeline** — Kanban board with drag-and-drop. Move deals between stages (Lead → Qualified → Proposal → Won)
-- **Activities** — Log calls, emails, meetings, and tasks against contacts or deals
 - **Notes** — Attach notes to any contact or deal
+- **Activities** — Filterable timeline of calls, emails, meetings and tasks (read-only, see below)
 - **Dashboard** — KPI cards (contacts, active deals, pipeline value, weekly activities) + pipeline summary + activity feed
-- **Settings** — Customize pipeline stages with names and colors
+- **Settings** — Add and remove pipeline stages with names and colors
 - **Demo Data** — One-click seed button populates the app with realistic sample data
+
+### Not wired up yet
+
+The server actions exist and are tested, but no UI reaches them. Worth knowing
+before you go looking for the button:
+
+| Missing | Effect |
+|---|---|
+| `createActivity`, `completeActivity`, `deleteActivity` | Activities can be read and filtered, but not entered through the app — they come from the seed |
+| `deleteNote` | Notes can be added to a contact or deal, but not removed |
+| `updateStage`, `reorderStages` | Stages can be added and deleted, but not renamed or reordered |
 
 ## Tech Stack
 
