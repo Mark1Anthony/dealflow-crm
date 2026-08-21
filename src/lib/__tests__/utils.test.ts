@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { cn, formatCurrency, formatDate, formatRelativeTime } from '../utils';
+import { cn, formatCurrency, formatDate, formatRelativeTime, formErrorMessages } from '../utils';
 
 describe('cn', () => {
   it('merges class names', () => {
@@ -141,5 +141,30 @@ describe('formatRelativeTime - edge cases', () => {
   it('reports future timestamps as "just now"', () => {
     const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
     expect(formatRelativeTime(tomorrow)).toBe('just now');
+  });
+});
+
+describe('formErrorMessages', () => {
+  it('returns nothing for the initial null state', () => {
+    expect(formErrorMessages(null)).toEqual([]);
+    expect(formErrorMessages(undefined)).toEqual([]);
+  });
+
+  it('returns nothing when the action succeeded', () => {
+    expect(formErrorMessages({})).toEqual([]);
+  });
+
+  it('flattens Zod fieldErrors into one message per entry', () => {
+    const state = { error: { name: ['Name is required'], email: ['Invalid email'] } };
+    expect(formErrorMessages(state)).toEqual(['Name is required', 'Invalid email']);
+  });
+
+  it('keeps multiple messages for the same field', () => {
+    const state = { error: { value: ['Must be a number', 'Value must be positive'] } };
+    expect(formErrorMessages(state)).toEqual(['Must be a number', 'Value must be positive']);
+  });
+
+  it('accepts a plain string error', () => {
+    expect(formErrorMessages({ error: 'Not authenticated' })).toEqual(['Not authenticated']);
   });
 });

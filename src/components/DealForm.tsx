@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { createDeal, updateDeal } from "@/lib/actions/deals";
+import { formErrorMessages } from "@/lib/utils";
 import type { Contact, Deal, PipelineStage } from "@/lib/types";
 
 interface DealFormProps {
@@ -11,10 +12,11 @@ interface DealFormProps {
 }
 
 export function DealForm({ contacts, stages, deal }: DealFormProps) {
-  const [error, formAction, pending] = useActionState(
+  const [state, formAction, pending] = useActionState(
     (_: unknown, fd: FormData) => (deal ? updateDeal(deal.id, fd) : createDeal(fd)),
     null,
   );
+  const errors = formErrorMessages(state);
 
   return (
     <form action={formAction} className="bg-[#111218] border border-white/5 rounded-2xl p-6 space-y-4">
@@ -49,7 +51,13 @@ export function DealForm({ contacts, stages, deal }: DealFormProps) {
         <label className="block text-sm font-medium text-zinc-400 mb-1.5">Description</label>
         <textarea name="description" rows={3} defaultValue={deal?.description ?? ""} className="w-full bg-zinc-900 border border-zinc-700 text-zinc-100 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-cyan-500 transition resize-none" />
       </div>
-      {error && <div className="bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2 text-sm text-red-400">{String(error)}</div>}
+      {errors.length > 0 && (
+        <div className="bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2 text-sm text-red-400">
+          {errors.map((message) => (
+            <p key={message}>{message}</p>
+          ))}
+        </div>
+      )}
       <button type="submit" disabled={pending} className="bg-cyan-500 hover:bg-cyan-600 disabled:opacity-50 text-white font-semibold px-6 py-2.5 rounded-lg transition text-sm">
         {pending ? (deal ? "Saving..." : "Creating...") : (deal ? "Save changes" : "Create deal")}
       </button>

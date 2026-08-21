@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { ContactForm } from '@/components/ContactForm';
 import type { Contact } from '@/lib/types';
@@ -52,8 +52,10 @@ describe('ContactForm', () => {
     expect(screen.getByRole('button', { name: /update contact/i })).toBeInTheDocument();
   });
 
+  // The actions answer { error: fieldErrors } from a failed Zod parse, not a
+  // plain string - see formErrorMessages in lib/utils.
   it('shows the validation error returned by the action', async () => {
-    h.createContact.mockResolvedValue('Name is required');
+    h.createContact.mockResolvedValue({ error: { name: ['Name is required'] } });
     render(<ContactForm />);
 
     fireEvent.submit(screen.getByRole('button', { name: /create contact/i }).closest('form')!);
@@ -61,6 +63,21 @@ describe('ContactForm', () => {
     await waitFor(() => {
       expect(screen.getByText('Name is required')).toBeInTheDocument();
     });
+  });
+
+  it('shows every field error, not "[object Object]"', async () => {
+    h.createContact.mockResolvedValue({
+      error: { name: ['Name is required'], email: ['Invalid email'] },
+    });
+    render(<ContactForm />);
+
+    fireEvent.submit(screen.getByRole('button', { name: /create contact/i }).closest('form')!);
+
+    await waitFor(() => {
+      expect(screen.getByText('Name is required')).toBeInTheDocument();
+    });
+    expect(screen.getByText('Invalid email')).toBeInTheDocument();
+    expect(screen.queryByText(/\[object Object\]/)).not.toBeInTheDocument();
   });
 
   it('submits new contacts through createContact', async () => {

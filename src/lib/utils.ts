@@ -68,3 +68,23 @@ export function formatRelativeTime(date: string): string {
   const years = Math.floor(months / 12);
   return `${years} year${years === 1 ? '' : 's'} ago`;
 }
+
+/**
+ * Turn what a form action returns on failure into readable lines.
+ *
+ * The actions answer `{ error: fieldErrors }` where fieldErrors is the object
+ * produced by a failed Zod parse, e.g. `{ name: ['Name is required'] }`.
+ * Rendering that with String() yields "[object Object]", so flatten it here.
+ */
+export function formErrorMessages(state: unknown): string[] {
+  if (!state || typeof state !== 'object') return [];
+
+  const fieldErrors = (state as { error?: unknown }).error;
+  if (!fieldErrors) return [];
+  if (typeof fieldErrors === 'string') return [fieldErrors];
+  if (typeof fieldErrors !== 'object') return [String(fieldErrors)];
+
+  return Object.values(fieldErrors as Record<string, unknown>)
+    .flatMap((messages) => (Array.isArray(messages) ? messages : messages ? [messages] : []))
+    .map((message) => String(message));
+}

@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { createContact, updateContact } from "@/lib/actions/contacts";
+import { formErrorMessages } from "@/lib/utils";
 import type { Contact } from "@/lib/types";
 
 export function ContactForm({ contact }: { contact?: Contact }) {
@@ -9,7 +10,8 @@ export function ContactForm({ contact }: { contact?: Contact }) {
     ? ((_: unknown, fd: FormData) => updateContact(contact.id, fd))
     : ((_: unknown, fd: FormData) => createContact(fd));
 
-  const [error, formAction, pending] = useActionState(action, null);
+  const [state, formAction, pending] = useActionState(action, null);
+  const errors = formErrorMessages(state);
 
   return (
     <form action={formAction} className="bg-[#111218] border border-white/5 rounded-2xl p-6 space-y-4">
@@ -41,7 +43,13 @@ export function ContactForm({ contact }: { contact?: Contact }) {
         <label htmlFor="contact-notes" className="block text-sm font-medium text-zinc-400 mb-1.5">Notes</label>
         <textarea id="contact-notes" name="notes" rows={3} defaultValue={contact?.notes || ""} className="w-full bg-zinc-900 border border-zinc-700 text-zinc-100 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-cyan-500 transition resize-none" />
       </div>
-      {error && <div className="bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2 text-sm text-red-400">{String(error)}</div>}
+      {errors.length > 0 && (
+        <div className="bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2 text-sm text-red-400">
+          {errors.map((message) => (
+            <p key={message}>{message}</p>
+          ))}
+        </div>
+      )}
       <button type="submit" disabled={pending} className="bg-cyan-500 hover:bg-cyan-600 disabled:opacity-50 text-white font-semibold px-6 py-2.5 rounded-lg transition text-sm">
         {pending ? "Saving..." : contact ? "Update contact" : "Create contact"}
       </button>
