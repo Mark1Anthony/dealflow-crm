@@ -39,7 +39,7 @@ export async function getDashboardStats(): Promise<DashboardStats> {
   ]);
 
   const pipelineValue = (valueRes.data ?? []).reduce(
-    (sum: number, d: any) => sum + (d.value ?? 0),
+    (sum: number, d: { value: number | null }) => sum + (d.value ?? 0),
     0,
   );
 

@@ -3,6 +3,18 @@ import { render, screen, waitFor } from '@testing-library/react';
 import { KanbanBoard } from '@/components/KanbanBoard';
 import type { Deal, PipelineStage } from '@/lib/types';
 
+// The render-prop signatures the dnd library hands its children. Only the
+// fields KanbanBoard actually reads are modelled.
+type DroppableChildren = (
+  provided: { innerRef: () => void; droppableProps: object; placeholder: null },
+  snapshot: { isDraggingOver: boolean },
+) => React.ReactNode;
+
+type DraggableChildren = (
+  provided: { innerRef: () => void; draggableProps: object; dragHandleProps: object },
+  snapshot: { isDragging: boolean },
+) => React.ReactNode;
+
 // @hello-pangea/dnd needs a real pointer sequence to produce a drag. The shim
 // below keeps the component's own markup but hands us onDragEnd directly, so a
 // drop can be simulated. next/link is replaced because it wants a router.
@@ -32,7 +44,7 @@ vi.mock('@hello-pangea/dnd', () => ({
     h.onDragEnd.current = onDragEnd;
     return <div>{children}</div>;
   },
-  Droppable: ({ children, droppableId }: any) => (
+  Droppable: ({ children }: { children: DroppableChildren }) => (
     <div>
       {children(
         { innerRef: () => {}, droppableProps: {}, placeholder: null },
@@ -40,7 +52,7 @@ vi.mock('@hello-pangea/dnd', () => ({
       )}
     </div>
   ),
-  Draggable: ({ children }: any) => (
+  Draggable: ({ children }: { children: DraggableChildren }) => (
     <div>
       {children(
         { innerRef: () => {}, draggableProps: {}, dragHandleProps: {} },

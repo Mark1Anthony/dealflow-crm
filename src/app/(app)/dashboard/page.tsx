@@ -1,5 +1,4 @@
 import { getDashboardStats, getRecentActivities } from "@/lib/queries/dashboard";
-import { getPipelineStages } from "@/lib/queries/pipeline";
 import { getDealsByStage } from "@/lib/queries/deals";
 import { StatCard } from "@/components/StatCard";
 import { ActivityFeed } from "@/components/ActivityFeed";

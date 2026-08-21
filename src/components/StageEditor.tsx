@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { createStage, updateStage, deleteStage } from "@/lib/actions/pipeline";
+import { createStage, deleteStage } from "@/lib/actions/pipeline";
 import { formErrorMessages } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import type { PipelineStage } from "@/lib/types";
