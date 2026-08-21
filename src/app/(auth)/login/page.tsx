@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { getSupabaseBrowserClient } from "@/lib/supabase-browser";
+import { signInAsDemoUser } from "@/lib/actions/demo";
 import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
@@ -10,8 +11,25 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [demoLoading, setDemoLoading] = useState(false);
   const router = useRouter();
   const supabase = getSupabaseBrowserClient();
+
+  async function handleDemoLogin() {
+    setError(null);
+    setDemoLoading(true);
+
+    const { error: demoError } = await signInAsDemoUser();
+
+    if (demoError) {
+      setError(demoError);
+      setDemoLoading(false);
+      return;
+    }
+
+    router.push("/dashboard");
+    router.refresh();
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -92,12 +110,30 @@ export default function LoginPage() {
 
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || demoLoading}
               className="w-full bg-cyan-500 hover:bg-cyan-600 disabled:opacity-50 text-white font-semibold py-2.5 rounded-lg transition text-sm"
             >
               {loading ? "Loading..." : isSignUp ? "Create account" : "Log in"}
             </button>
           </form>
+
+          <div className="flex items-center gap-3 my-5">
+            <div className="h-px flex-1 bg-white/5" />
+            <span className="text-xs text-zinc-600">or</span>
+            <div className="h-px flex-1 bg-white/5" />
+          </div>
+
+          <button
+            type="button"
+            onClick={handleDemoLogin}
+            disabled={loading || demoLoading}
+            className="w-full bg-white/5 hover:bg-white/10 disabled:opacity-50 border border-white/10 text-zinc-200 font-medium py-2.5 rounded-lg transition text-sm"
+          >
+            {demoLoading ? "Opening demo..." : "Browse as demo user"}
+          </button>
+          <p className="text-center text-zinc-600 text-xs mt-3">
+            Read-write sandbox with sample data. No sign-up required.
+          </p>
         </div>
 
         <p className="text-center text-zinc-600 text-xs mt-6">

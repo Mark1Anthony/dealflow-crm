@@ -4,6 +4,11 @@ A lightweight, full-stack CRM for managing sales pipelines, contacts, and activi
 
 **[Live Demo](https://dealflow-crm-eta.vercel.app)** · **[Portfolio](https://mark1anthony.github.io/mark-portfolio/)**
 
+> **Guest access:** the login page has a **"Browse as demo user"** button — no
+> sign-up needed. It signs in a prepared account and loads sample data on first
+> visit. The account is an ordinary user, so Row Level Security applies to it
+> like to any other: it only ever sees its own rows.
+
 ---
 
 ## What it does
