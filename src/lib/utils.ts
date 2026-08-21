@@ -20,12 +20,19 @@ export function formatCurrency(cents: number): string {
   }).format(cents / 100);
 }
 
+/** Shown instead of a date that cannot be parsed. */
+const INVALID_DATE = '—';
+
 /**
  * Format an ISO date string to a readable format.
  * e.g. "2026-04-12" → "12 Apr 2026"
+ * Unparsable input yields "—" rather than "Invalid Date".
  */
 export function formatDate(date: string): string {
-  return new Date(date).toLocaleDateString('en-GB', {
+  const parsed = new Date(date);
+  if (Number.isNaN(parsed.getTime())) return INVALID_DATE;
+
+  return parsed.toLocaleDateString('en-GB', {
     day: 'numeric',
     month: 'short',
     year: 'numeric',
@@ -35,10 +42,13 @@ export function formatDate(date: string): string {
 /**
  * Format an ISO date string as relative time.
  * e.g. "2 hours ago", "3 days ago"
+ * Unparsable input yields "—" rather than "NaN years ago".
  */
 export function formatRelativeTime(date: string): string {
   const now = Date.now();
   const then = new Date(date).getTime();
+  if (Number.isNaN(then)) return INVALID_DATE;
+
   const seconds = Math.floor((now - then) / 1000);
 
   if (seconds < 60) return 'just now';

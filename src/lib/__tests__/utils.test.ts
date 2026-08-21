@@ -81,3 +81,65 @@ describe('formatRelativeTime', () => {
     expect(formatRelativeTime(twoDaysAgo)).toBe('2 days ago');
   });
 });
+
+describe('formatCurrency - edge cases', () => {
+  it('formats negative amounts with a minus sign', () => {
+    const result = formatCurrency(-12345);
+    expect(result).toContain('123');
+    expect(result).toContain('€');
+    expect(result.replace(/−/, '-')).toContain('-');
+  });
+
+  it('rounds sub-cent input to two decimals', () => {
+    expect(formatCurrency(1)).toContain('0');
+    expect(formatCurrency(1)).toContain('01');
+  });
+});
+
+describe('formatDate - edge cases', () => {
+  it('returns a dash for an unparsable string instead of "Invalid Date"', () => {
+    expect(formatDate('not-a-date')).toBe('—');
+  });
+
+  it('returns a dash for an empty string', () => {
+    expect(formatDate('')).toBe('—');
+  });
+
+  it('still formats a full ISO timestamp', () => {
+    const result = formatDate('2026-04-15T13:45:00.000Z');
+    expect(result).toContain('Apr');
+    expect(result).toContain('2026');
+  });
+});
+
+describe('formatRelativeTime - edge cases', () => {
+  it('returns a dash for an unparsable string instead of "NaN years ago"', () => {
+    expect(formatRelativeTime('garbage')).toBe('—');
+  });
+
+  it('returns a dash for an empty string', () => {
+    expect(formatRelativeTime('')).toBe('—');
+  });
+
+  it('returns singular forms at the unit boundaries', () => {
+    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+    const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+    expect(formatRelativeTime(oneHourAgo)).toBe('1 hour ago');
+    expect(formatRelativeTime(oneDayAgo)).toBe('1 day ago');
+  });
+
+  it('returns months and years for older dates', () => {
+    const twoMonthsAgo = new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString();
+    const twoYearsAgo = new Date(Date.now() - 730 * 24 * 60 * 60 * 1000).toISOString();
+    expect(formatRelativeTime(twoMonthsAgo)).toBe('2 months ago');
+    expect(formatRelativeTime(twoYearsAgo)).toBe('2 years ago');
+  });
+
+  // Known behaviour: a future timestamp produces a negative delta, which falls
+  // into the "< 60 seconds" branch. Documented rather than changed - the app
+  // only ever formats created_at, which is always in the past.
+  it('reports future timestamps as "just now"', () => {
+    const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+    expect(formatRelativeTime(tomorrow)).toBe('just now');
+  });
+});
