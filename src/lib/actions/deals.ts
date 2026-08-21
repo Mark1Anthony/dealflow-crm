@@ -81,12 +81,16 @@ export async function moveDealToStage(dealId: string, stageId: string) {
   const user = await getUser();
   if (!user) throw new Error('Not authenticated');
 
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from('deals')
     .update({ stage_id: stageId })
-    .eq('id', dealId);
+    .eq('id', dealId)
+    .select('id');
 
   if (error) throw error;
+  // An update that matches no row is not an error for Supabase. Without this
+  // check the optimistic move in KanbanBoard would never be rolled back.
+  if (!data || data.length === 0) throw new Error('Deal not found');
 
   revalidatePath('/deals');
 }
