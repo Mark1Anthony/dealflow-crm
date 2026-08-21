@@ -6,7 +6,12 @@ import { stageSchema } from '@/lib/validation';
 
 export async function createStage(formData: FormData) {
   const raw = Object.fromEntries(formData);
-  const parsed = stageSchema.safeParse(raw);
+  // FormData values are always strings, but stageSchema expects a number -
+  // same conversion createDeal does for `value`.
+  const parsed = stageSchema.safeParse({
+    ...raw,
+    position: raw.position === undefined ? undefined : Number(raw.position),
+  });
   if (!parsed.success) {
     return { error: parsed.error.flatten().fieldErrors };
   }
@@ -38,7 +43,10 @@ export async function createStage(formData: FormData) {
 
 export async function updateStage(id: string, formData: FormData) {
   const raw = Object.fromEntries(formData);
-  const parsed = stageSchema.safeParse(raw);
+  const parsed = stageSchema.safeParse({
+    ...raw,
+    position: raw.position === undefined ? undefined : Number(raw.position),
+  });
   if (!parsed.success) {
     return { error: parsed.error.flatten().fieldErrors };
   }

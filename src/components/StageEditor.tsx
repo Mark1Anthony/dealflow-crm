@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { createStage, updateStage, deleteStage } from "@/lib/actions/pipeline";
+import { formErrorMessages } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import type { PipelineStage } from "@/lib/types";
 
@@ -18,15 +19,15 @@ export function StageEditor({ stages }: { stages: PipelineStage[] }) {
     fd.set("name", newName);
     fd.set("position", String(stages.length));
     fd.set("color", newColor);
-    const result = await createStage(fd);
-    if (result && typeof result === 'object' && 'error' in result) setError(String(result.error));
-    else { setNewName(""); router.refresh(); }
+    const messages = formErrorMessages(await createStage(fd));
+    if (messages.length > 0) setError(messages.join(" "));
+    else { setError(null); setNewName(""); router.refresh(); }
   }
 
   async function handleDelete(id: string) {
-    const result = await deleteStage(id);
-    if (result && typeof result === 'object' && 'error' in result) setError(String(result.error));
-    else router.refresh();
+    const messages = formErrorMessages(await deleteStage(id));
+    if (messages.length > 0) setError(messages.join(" "));
+    else { setError(null); router.refresh(); }
   }
 
   return (
