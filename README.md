@@ -36,13 +36,14 @@ A lightweight, full-stack CRM for managing sales pipelines, contacts, and activi
 src/
 ├── app/
 │   ├── (auth)/login/          # Public login/signup page
+│   ├── (auth)/auth/callback/  # Supabase OAuth/email callback
 │   ├── (app)/                 # Authenticated routes (sidebar layout)
 │   │   ├── dashboard/         # KPIs + pipeline summary + activity feed
 │   │   ├── contacts/          # List, detail, create, edit
 │   │   ├── deals/             # Kanban board, detail, create, edit
 │   │   ├── activities/        # Filterable activity feed
 │   │   └── settings/          # Pipeline stage editor
-│   └── api/deals/[id]/stage/  # PATCH endpoint for Kanban drag
+│   └── api/deals/[id]/stage/  # PATCH endpoint for moving a deal between stages
 ├── components/
 │   ├── ui/                    # Reusable primitives (Button, Input, Card, Modal)
 │   ├── KanbanBoard.tsx        # Client component with DnD
@@ -51,10 +52,13 @@ src/
 ├── lib/
 │   ├── queries/               # Server-side data fetching (contacts, deals, etc.)
 │   ├── actions/               # Server Actions for mutations (create, update, delete)
+│   ├── __tests__/             # Vitest suites for validation and utils
 │   ├── supabase-server.ts     # Authenticated Supabase client (cookie-based)
 │   ├── supabase-browser.ts    # Browser-side Supabase client
 │   ├── types.ts               # All TypeScript interfaces
+│   ├── utils.ts               # Formatting helpers (currency, dates)
 │   └── validation.ts          # Zod schemas for every form
+├── test/                      # Vitest setup (jsdom, jest-dom matchers)
 └── middleware.ts               # Auth guard: redirect unauthenticated users to /login
 ```
 
