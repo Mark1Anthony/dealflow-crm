@@ -1,6 +1,6 @@
 # DealFlow CRM
 
-A lightweight, full-stack CRM for managing sales pipelines, contacts, and activities. Built with Next.js 15, Supabase, and TypeScript.
+A lightweight, full-stack CRM for managing sales pipelines, contacts, and activities. Built with Next.js 16, Supabase, and TypeScript.
 
 **[Live Demo](https://dealflow-crm-eta.vercel.app)** · **[Portfolio](https://mark1anthony.github.io/mark-portfolio/)**
 
@@ -20,7 +20,7 @@ A lightweight, full-stack CRM for managing sales pipelines, contacts, and activi
 
 | Layer | Technology | Why |
 |-------|-----------|-----|
-| Framework | **Next.js 15** (App Router) | Server Components + Server Actions for zero-API-boilerplate CRUD |
+| Framework | **Next.js 16** (App Router) | Server Components + Server Actions for zero-API-boilerplate CRUD |
 | Language | **TypeScript** (strict) | Type safety across the full stack, Zod for runtime validation |
 | Auth | **Supabase Auth** | Email/password with middleware guard, session via cookies |
 | Database | **PostgreSQL** (Supabase) | 7 tables, foreign keys, CHECK constraints, indexes |
