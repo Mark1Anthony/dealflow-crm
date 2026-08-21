@@ -43,3 +43,7 @@ next-env.d.ts
 
 # versehentliche Git-Backups
 .git-backup/
+
+# Supabase CLI-Zwischenstände
+supabase/.temp/
+supabase/.branches/
