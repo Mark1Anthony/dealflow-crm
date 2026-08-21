@@ -57,7 +57,7 @@ src/
 ├── lib/
 │   ├── queries/               # Server-side data fetching (contacts, deals, etc.)
 │   ├── actions/               # Server Actions for mutations (create, update, delete)
-│   ├── __tests__/             # Vitest suites for validation and utils
+│   ├── __tests__/             # Vitest suites: validation, utils, server actions
 │   ├── supabase-server.ts     # Authenticated Supabase client (cookie-based)
 │   ├── supabase-browser.ts    # Browser-side Supabase client
 │   ├── types.ts               # All TypeScript interfaces
@@ -117,6 +117,15 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=  # Your Supabase anon/public key
 npm test          # Run all tests
 npm run test:watch # Watch mode
 ```
+
+Vitest, with jsdom for the component suites:
+
+| Suite | Covers |
+|---|---|
+| `lib/__tests__/validation.test.ts` | Zod schemas for every form |
+| `lib/__tests__/utils.test.ts` | Formatters, including unparsable dates |
+| `lib/__tests__/actions.test.ts` | Every server action against a Supabase stub — above all that each one refuses to run without a session |
+| `components/__tests__/` | KanbanBoard drag/optimistic update/rollback, ContactForm validation and submit |
 
 ## Scripts
 
