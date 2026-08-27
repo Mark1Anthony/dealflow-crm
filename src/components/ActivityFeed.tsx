@@ -1,10 +1,13 @@
 import type { Activity } from "@/lib/types";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { ActivityActions } from "@/components/ActivityActions";
 
 interface ActivityFeedProps {
   activities: Activity[];
   limit?: number;
+  /** Show the done/remove controls. Off on the dashboard, which only reads. */
+  actionable?: boolean;
 }
 
 const typeIcons: Record<Activity["type"], ReactNode> = {
@@ -55,7 +58,7 @@ function relativeTime(dateStr: string): string {
   return new Date(dateStr).toLocaleDateString();
 }
 
-export function ActivityFeed({ activities, limit }: ActivityFeedProps) {
+export function ActivityFeed({ activities, limit, actionable = false }: ActivityFeedProps) {
   const items = limit ? activities.slice(0, limit) : activities;
   const isCompleted = (a: Activity) => !!a.completed_at;
 
@@ -64,7 +67,7 @@ export function ActivityFeed({ activities, limit }: ActivityFeedProps) {
       {items.map((activity) => (
         <div
           key={activity.id}
-          className="flex items-start gap-3 rounded-lg px-3 py-2.5 transition hover:bg-white/[0.02]"
+          className="group flex items-start gap-3 rounded-lg px-3 py-2.5 transition hover:bg-white/[0.02]"
         >
           <div
             className={cn(
@@ -95,6 +98,12 @@ export function ActivityFeed({ activities, limit }: ActivityFeedProps) {
               )}
             </div>
           </div>
+
+          {actionable && (
+            <div className="shrink-0 opacity-0 transition group-hover:opacity-100 focus-within:opacity-100">
+              <ActivityActions id={activity.id} completedAt={activity.completed_at} />
+            </div>
+          )}
         </div>
       ))}
     </div>

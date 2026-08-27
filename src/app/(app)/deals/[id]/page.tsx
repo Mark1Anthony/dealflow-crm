@@ -44,7 +44,7 @@ export default async function DealDetailPage({ params }: { params: Promise<{ id:
           <div className="bg-[#111218] border border-white/5 rounded-2xl p-5">
             <h3 className="text-zinc-50 font-bold mb-3">Notes</h3>
             <NoteForm dealId={id} />
-            <NoteList notes={notes} />
+            <NoteList notes={notes} returnPath={`/deals/${id}`} />
           </div>
         </div>
 

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getActivities } from "@/lib/queries/activities";
 import { TopBar } from "@/components/TopBar";
 import { ActivityFeed } from "@/components/ActivityFeed";
+import { ActivityForm } from "@/components/ActivityForm";
 
 export default async function ActivitiesPage({ searchParams }: { searchParams: Promise<{ type?: string; page?: string }> }) {
   const { type, page: pageParam } = await searchParams;
@@ -13,6 +14,11 @@ export default async function ActivitiesPage({ searchParams }: { searchParams: P
   return (
     <>
       <TopBar title="Activities" subtitle={`${total} total`} />
+
+      <div className="bg-[#111218] border border-white/5 rounded-2xl p-5 mb-6">
+        <h2 className="text-sm font-semibold text-zinc-300 mb-3">Log an activity</h2>
+        <ActivityForm />
+      </div>
 
       <div className="flex gap-2 mb-6">
         <a href="/activities" className={`px-3 py-1.5 rounded-lg text-sm font-medium transition ${!type ? "bg-cyan-500/15 text-cyan-400" : "bg-white/5 text-zinc-400 hover:text-zinc-200"}`}>
@@ -31,7 +37,7 @@ export default async function ActivitiesPage({ searchParams }: { searchParams: P
         </div>
       ) : (
         <div className="bg-[#111218] border border-white/5 rounded-2xl p-5">
-          <ActivityFeed activities={activities} />
+          <ActivityFeed activities={activities} actionable />
         </div>
       )}
 

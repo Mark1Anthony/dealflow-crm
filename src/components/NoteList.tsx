@@ -1,13 +1,17 @@
 "use client";
 
+import { useTransition } from "react";
+import { deleteNote } from "@/lib/actions/notes";
 import type { Note } from "@/lib/types";
 
 interface NoteListProps {
   notes: Note[];
-  onDelete?: (noteId: string) => void;
+  /** Page to revalidate after a delete. Omit to hide the delete control. */
+  returnPath?: string;
 }
 
-export function NoteList({ notes, onDelete }: NoteListProps) {
+export function NoteList({ notes, returnPath }: NoteListProps) {
+  const [pending, startTransition] = useTransition();
   return (
     <div className="space-y-3">
       {notes.map((note) => (
@@ -26,10 +30,11 @@ export function NoteList({ notes, onDelete }: NoteListProps) {
                 year: "numeric",
               })}
             </span>
-            {onDelete && (
+            {returnPath && (
               <button
-                onClick={() => onDelete(note.id)}
-                className="text-xs text-zinc-600 transition hover:text-red-400"
+                onClick={() => startTransition(() => void deleteNote(note.id, returnPath))}
+                disabled={pending}
+                className="text-xs text-zinc-600 transition hover:text-red-400 disabled:opacity-50"
               >
                 Delete
               </button>

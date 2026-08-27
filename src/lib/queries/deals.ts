@@ -1,17 +1,6 @@
 import { getSupabaseServerClient } from '@/lib/supabase-server';
 import type { Deal, Note, Activity, PipelineStage } from '@/lib/types';
 
-export async function getDeals() {
-  const supabase = await getSupabaseServerClient();
-  const { data, error } = await supabase
-    .from('deals')
-    .select('*, contact:contacts(name), stage:pipeline_stages(name, color)')
-    .order('created_at', { ascending: false });
-
-  if (error) throw error;
-  return data as Deal[];
-}
-
 export async function getDealsByStage() {
   const supabase = await getSupabaseServerClient();
 

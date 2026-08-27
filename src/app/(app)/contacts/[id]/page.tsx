@@ -64,7 +64,7 @@ export default async function ContactDetailPage({ params }: { params: Promise<{ 
           <div className="bg-[#111218] border border-white/5 rounded-2xl p-5">
             <h3 className="text-zinc-50 font-bold mb-3">Notes</h3>
             <NoteForm contactId={id} />
-            <NoteList notes={notes} />
+            <NoteList notes={notes} returnPath={`/contacts/${id}`} />
           </div>
         </div>
 
