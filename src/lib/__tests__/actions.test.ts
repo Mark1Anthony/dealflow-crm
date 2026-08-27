@@ -13,6 +13,7 @@ const h = vi.hoisted(() => {
     results: {} as Record<string, Result>,
     calls: [] as { table: string; op: string; payload?: unknown }[],
     signIn: { error: null as null | { message: string } },
+    signUp: { error: null as null | { message: string } },
   };
 
   const resultFor = (table: string): Result =>
@@ -57,6 +58,7 @@ const h = vi.hoisted(() => {
     from: (table: string) => query(table),
     auth: {
       signInWithPassword: vi.fn(async () => ({ error: state.signIn.error })),
+      signUp: vi.fn(async () => ({ error: state.signUp.error })),
     },
   };
 
@@ -103,7 +105,9 @@ beforeEach(() => {
   h.state.results = {};
   h.state.calls = [];
   h.state.signIn.error = null;
+  h.state.signUp.error = null;
   h.client.auth.signInWithPassword.mockClear();
+  h.client.auth.signUp.mockClear();
 });
 
 describe('server actions - unauthenticated access', () => {
@@ -241,14 +245,42 @@ describe('pipeline actions', () => {
 });
 
 describe('signInAsDemoUser', () => {
-  it('reports when demo credentials are not configured', async () => {
+  it('creates a per-visitor account when nothing is configured', async () => {
     delete process.env.DEMO_USER_EMAIL;
     delete process.env.DEMO_USER_PASSWORD;
+    h.state.user = { id: 'demo' };
+    h.state.results.pipeline_stages = { data: null, error: null, count: 0 };
 
-    expect(await signInAsDemoUser()).toEqual({
-      error: 'Demo access is not configured on this deployment.',
-    });
+    expect(await signInAsDemoUser()).toEqual({});
     expect(h.client.auth.signInWithPassword).not.toHaveBeenCalled();
+    expect(h.client.auth.signUp).toHaveBeenCalledTimes(1);
+
+    const { email, password } = h.client.auth.signUp.mock.calls[0][0];
+    expect(email).toMatch(/^demo-[0-9a-f]{8}@example\.com$/);
+    expect(password.length).toBeGreaterThan(20);
+  });
+
+  it('gives every visitor their own account', async () => {
+    delete process.env.DEMO_USER_EMAIL;
+    delete process.env.DEMO_USER_PASSWORD;
+    h.state.user = { id: 'demo' };
+
+    await signInAsDemoUser();
+    await signInAsDemoUser();
+
+    const [first, second] = h.client.auth.signUp.mock.calls.map((c) => c[0].email);
+    expect(first).not.toBe(second);
+  });
+
+  it('explains what to do when sign-up is blocked', async () => {
+    delete process.env.DEMO_USER_EMAIL;
+    delete process.env.DEMO_USER_PASSWORD;
+    h.state.signUp.error = { message: 'Email confirmation required' };
+
+    const result = await signInAsDemoUser();
+
+    expect(result.error).toContain('Email confirmation required');
+    expect(result.error).toContain('DEMO_USER_EMAIL');
   });
 
   it('passes the configured credentials through and seeds an empty account', async () => {

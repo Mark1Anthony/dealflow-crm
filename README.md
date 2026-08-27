@@ -5,9 +5,10 @@ A lightweight, full-stack CRM for managing sales pipelines, contacts, and activi
 **[Live Demo](https://dealflow-crm-eta.vercel.app)** · **[Portfolio](https://mark1anthony.github.io/mark-portfolio/)**
 
 > **Guest access:** the login page has a **"Browse as demo user"** button — no
-> sign-up needed. It signs in a prepared account and loads sample data on first
-> visit. The account is an ordinary user, so Row Level Security applies to it
-> like to any other: it only ever sees its own rows.
+> sign-up needed and nothing to configure. Each visitor gets their own account
+> with its own sample data, so two people trying the demo do not edit the same
+> rows. They are ordinary users: Row Level Security applies exactly as it does
+> to anyone else.
 
 ---
 
@@ -15,22 +16,11 @@ A lightweight, full-stack CRM for managing sales pipelines, contacts, and activi
 
 - **Contacts** — Create, edit, search, and manage contacts with company, email, phone, and notes
 - **Deal Pipeline** — Kanban board with drag-and-drop. Move deals between stages (Lead → Qualified → Proposal → Won)
-- **Notes** — Attach notes to any contact or deal
-- **Activities** — Filterable timeline of calls, emails, meetings and tasks (read-only, see below)
+- **Notes** — Attach notes to any contact or deal, remove them again
+- **Activities** — Log calls, emails, meetings and tasks; filter by type, mark done, delete
 - **Dashboard** — KPI cards (contacts, active deals, pipeline value, weekly activities) + pipeline summary + activity feed
-- **Settings** — Add and remove pipeline stages with names and colors
+- **Settings** — Add, rename, reorder and remove pipeline stages
 - **Demo Data** — One-click seed button populates the app with realistic sample data
-
-### Not wired up yet
-
-The server actions exist and are tested, but no UI reaches them. Worth knowing
-before you go looking for the button:
-
-| Missing | Effect |
-|---|---|
-| `createActivity`, `completeActivity`, `deleteActivity` | Activities can be read and filtered, but not entered through the app — they come from the seed |
-| `deleteNote` | Notes can be added to a contact or deal, but not removed |
-| `updateStage`, `reorderStages` | Stages can be added and deleted, but not renamed or reordered |
 
 ## Tech Stack
 
@@ -119,12 +109,18 @@ npm run dev
 NEXT_PUBLIC_SUPABASE_URL=       # Your Supabase project URL
 NEXT_PUBLIC_SUPABASE_ANON_KEY=  # Your Supabase anon/public key
 
-DEMO_USER_EMAIL=                # Optional: account behind "Browse as demo user"
+DEMO_USER_EMAIL=                # Optional: pin the guest button to one account
 DEMO_USER_PASSWORD=             # Optional: read server-side only
 ```
 
-Without the two `DEMO_USER_*` values the guest button stays visible but
-reports that demo access is not configured on this deployment.
+The `DEMO_USER_*` pair is optional. Set it to point the guest button at one
+shared account; leave it empty and every visitor gets their own throwaway
+account instead. Either way the values are read server-side only — no
+`NEXT_PUBLIC_` prefix.
+
+The per-visitor route needs sign-up to work, so **Authentication → Providers →
+Email → "Confirm email"** has to be off in the Supabase project. With it on,
+the button says so and names the alternative.
 
 ## Testing
 
