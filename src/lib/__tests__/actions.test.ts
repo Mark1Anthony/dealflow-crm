@@ -7,6 +7,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
  */
 const h = vi.hoisted(() => {
   type Result = { data?: unknown; error?: unknown; count?: number | null };
+  type Credentials = { email: string; password: string };
 
   const state = {
     user: null as null | { id: string },
@@ -57,8 +58,14 @@ const h = vi.hoisted(() => {
   const client = {
     from: (table: string) => query(table),
     auth: {
-      signInWithPassword: vi.fn(async () => ({ error: state.signIn.error })),
-      signUp: vi.fn(async () => ({ error: state.signUp.error })),
+      // Parameters are declared so mock.calls stays typed - vi.fn(async () => ...)
+      // would infer an empty tuple and make calls[0][0] undefined.
+      signInWithPassword: vi.fn(async (_credentials: Credentials) => ({
+        error: state.signIn.error,
+      })),
+      signUp: vi.fn(async (_credentials: Credentials) => ({
+        error: state.signUp.error,
+      })),
     },
   };
 
