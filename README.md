@@ -33,7 +33,7 @@ A lightweight, full-stack CRM for managing sales pipelines, contacts, and activi
 | Security | **Row Level Security** | Every table has RLS policies. Users can only see their own data |
 | Drag & Drop | **@hello-pangea/dnd** | Maintained fork of react-beautiful-dnd, optimistic updates with rollback |
 | Styling | **Tailwind CSS** | Utility-first, dark theme, responsive |
-| Deployment | **Vercel** | Edge middleware, automatic deployments from GitHub |
+| Deployment | **Vercel** | Edge middleware; deployed with `vercel deploy --prod` (no Git integration configured) |
 | CI | **GitHub Actions** | Type check + tests + build on every push |
 
 ## Architecture
