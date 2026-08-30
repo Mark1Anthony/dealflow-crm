@@ -2,7 +2,7 @@
 
 A lightweight, full-stack CRM for managing sales pipelines, contacts, and activities. Built with Next.js 16, Supabase, and TypeScript.
 
-**[Live Demo](https://dealflow-crm-eta.vercel.app)** · **[Portfolio](https://mark1anthony.github.io/mark-portfolio/)**
+**[Live Demo](https://dealflow-crm-tau.vercel.app)** · **[Portfolio](https://mark1anthony.github.io/mark-portfolio/)**
 
 > **Guest access:** the login page has a **"Browse as demo user"** button — no
 > sign-up needed and nothing to configure. Each visitor gets their own account
